@@ -164,3 +164,83 @@ class RegisterSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         user = User.objects.create_user(**validated_data)
         return user
+class PatientRecordSerializer(serializers.ModelSerializer):
+    user_username = serializers.ReadOnlyField(source='user.username')
+    user_email = serializers.ReadOnlyField(source='user.email')
+    user_fullname = serializers.SerializerMethodField()
+    
+    class Meta:
+        model = PatientRecord
+        fields = '__all__'
+        read_only_fields = ['id', 'created_at', 'updated_at']
+    
+    def get_user_fullname(self, obj):
+        return f"{obj.user.firstname or ''} {obj.user.lastname or ''}".strip()
+
+
+class TreatmentHistorySerializer(serializers.ModelSerializer):
+    user_username = serializers.ReadOnlyField(source='user.username')
+    balance = serializers.ReadOnlyField()
+    
+    class Meta:
+        model = TreatmentHistory
+        fields = '__all__'
+        read_only_fields = ['id', 'created_at', 'balance']
+class BillingSerializer(serializers.ModelSerializer):
+    user_username = serializers.ReadOnlyField(source='user.username')
+    balance = serializers.ReadOnlyField()
+    
+    class Meta:
+        model = Billing
+        fields = '__all__'
+        read_only_fields = ['id', 'invoice_number', 'created_at', 'updated_at', 'balance']
+
+
+class PaymentTransactionSerializer(serializers.ModelSerializer):
+    bill_invoice = serializers.ReadOnlyField(source='bill.invoice_number')
+    processed_by_name = serializers.ReadOnlyField(source='processed_by.username')
+    
+    class Meta:
+        model = PaymentTransaction
+        fields = '__all__'
+        read_only_fields = ['id', 'payment_date']
+from .models import Notification, UserNotificationPreference, NotificationLog
+
+class NotificationSerializer(serializers.ModelSerializer):
+    time_ago = serializers.ReadOnlyField()
+    is_expired = serializers.ReadOnlyField()
+    
+    class Meta:
+        model = Notification
+        fields = [
+            'id', 'user', 'notification_type', 'title', 'message',
+            'priority', 'delivery_channel', 'is_read', 'read_at',
+            'is_delivered', 'delivered_at', 'is_email_sent', 'email_sent_at',
+            'action_url', 'action_type', 'action_id',
+            'appointment_id', 'bill_id', 'waitlist_id',
+            'metadata', 'expires_at', 'created_at', 'updated_at',
+            'time_ago', 'is_expired'
+        ]
+        read_only_fields = ['id', 'created_at', 'updated_at', 'time_ago', 'is_expired']
+
+
+class UserNotificationPreferenceSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = UserNotificationPreference
+        exclude = ['user']
+        read_only_fields = ['id', 'created_at', 'updated_at']
+
+
+class NotificationLogSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = NotificationLog
+        fields = '__all__'
+        read_only_fields = ['id', 'created_at', 'updated_at']
+
+
+class MarkNotificationsReadSerializer(serializers.Serializer):
+    notification_ids = serializers.ListField(
+        child=serializers.IntegerField(),
+        required=False
+    )
+    mark_all = serializers.BooleanField(default=False)

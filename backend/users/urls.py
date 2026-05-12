@@ -8,8 +8,16 @@ router = DefaultRouter()
 router.register('register', RegisterViewset, basename='register')
 router.register('login', LoginViewset, basename='login')
 router.register('admin-login', AdminLoginViewset, basename='admin-login')
+router.register('staff-login', StaffLoginViewset, basename='staff-login')
 router.register('users', UserViewset, basename='users')
 router.register('appointments', AppointmentViewSet, basename='appointments')
+router.register('patient-records', PatientRecordViewSet, basename='patient-records')
+router.register('treatment-history', TreatmentHistoryViewSet, basename='treatment-history')
+router.register('billing', BillingViewSet, basename='billing')
+router.register('payments', PaymentTransactionViewSet, basename='payments') 
+router.register('notifications', NotificationViewSet, basename='notifications')
+router.register('notification-logs', NotificationLogViewSet, basename='notification-logs')
+
 
 # Add custom appointment endpoints
 custom_appointment_urls = [
