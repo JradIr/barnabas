@@ -15,10 +15,16 @@ import ProtectedRoutes from './components/ProtectedRoutes'
 import PasswordResetRequest from './components/PasswordResetRequest'
 import PasswordReset from './components/PasswordReset'
 import AdminLogin from './components/AdminLogin'
+import StaffLogin from './components/StaffLogin'
+import StaffNavbar from './components/StaffNavbar'
+import StaffDashboard from './components/StaffDashboard'
 import Appointment from './components/Appointment'
 import AppointmentForm from './components/AppointmentForm'
 import AdminDashboard from './components/AdminDashboard'
 import AdminAppointments from './components/AdminAppointments'
+import AdminPatients from './components/AdminPatients'
+import AdminReports from './components/AdminReports'
+import AdminPayments from './components/AdminPayments'
 import AppointmentScheduler from './components/AppointmentScheduler'
 import ExternalNavbar from './components/ExternalNavbar'
 
@@ -30,6 +36,7 @@ function App() {
     location.pathname === '/register' ||
     location.pathname === '/' ||
     location.pathname.includes('password') ||
+    location.pathname === '/staff' ||
     location.pathname === '/admin';
 
   // Routes where admin navbar should be shown
@@ -39,6 +46,9 @@ function App() {
                       location.pathname.startsWith('/admin/patients') ||
                       location.pathname.startsWith('/admin/reports') ||
                       location.pathname.startsWith('/admin/appointments');
+  
+  const staffNavbar = location.pathname.startsWith('/staff/dashboard') ||
+                      location.pathname.startsWith('/staff/appointments');
 
   return (
     <>
@@ -51,9 +61,21 @@ function App() {
                 <Route path="/register" element={<Register />} />
                 <Route path="/request/password_reset" element={<PasswordResetRequest />} />
                 <Route path="/admin" element={<AdminLogin />} />
+                <Route path="/staff" element={<StaffLogin />} />
                 <Route path="/password_reset/:token" element={<PasswordReset />} />
               </Routes>
               <Footer/>
+            </>
+          }
+        />
+      ) : staffNavbar ? (
+        <StaffNavbar
+          content={
+            <>
+              <Routes>
+                <Route path="/staff/dashboard" element={<StaffDashboard />} />
+              </Routes>
+              <AdminFooter/>
             </>
           }
         />
@@ -64,6 +86,9 @@ function App() {
               <Routes>
                 <Route path="/admin/dashboard" element={<AdminDashboard />} />
                 <Route path="/admin/appointments" element={<AdminAppointments />} />
+                <Route path="/admin/patients" element={<AdminPatients />} />
+                <Route path="/admin/payments" element={<AdminPayments />} />
+                <Route path="/admin/reports" element={<AdminReports />} />
               </Routes>
               <AdminFooter/>
             </>

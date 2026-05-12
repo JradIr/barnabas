@@ -34,6 +34,8 @@ import {
   EventAvailable,
   MonetizationOn,
   HealthAndSafety,
+  History,
+  AccessTime,
 } from "@mui/icons-material";
 import { Calendar, momentLocalizer } from "react-big-calendar";
 import moment from "moment";
@@ -46,31 +48,43 @@ const localizer = momentLocalizer(moment);
 const AdminDashboard = () => {
   const [billing, setBilling] = useState([]);
   const [payments, setPayments] = useState([]);
-  const [records, setRecords] = useState([]);
+  const [patients, setPatients] = useState([]);
   const [appointments, setAppointments] = useState([]);
+  const [auditLogs, setAuditLogs] = useState([]);
   const [loading, setLoading] = useState(true);
   const [stats, setStats] = useState({
     dailyAppointments: 0,
     weeklyAppointments: 0,
     monthlyAppointments: 0,
     revenueGrowth: 12.5,
+    totalRevenue: 0,
+    collectionRate: 0,
   });
 
   const fetchData = async () => {
     try {
-      const [billingRes, paymentsRes, recordsRes, appointmentsRes] = await Promise.all([
+      // Fetch all data in parallel
+      const [billingRes, paymentsRes, patientsRes, appointmentsRes, auditRes] = await Promise.all([
         AxiosInstance.get("billing/"),
         AxiosInstance.get("payments/"),
-        AxiosInstance.get("patients/"),
+        AxiosInstance.get("patient-records/"),
         AxiosInstance.get("appointments/"),
+        AxiosInstance.get("activity-logs/").catch(() => ({ data: [] })),
       ]);
-      setBilling(billingRes.data);
-      setPayments(paymentsRes.data);
-      setRecords(recordsRes.data);
-      setAppointments(appointmentsRes.data);
       
+      setBilling(Array.isArray(billingRes.data) ? billingRes.data : []);
+      setPayments(Array.isArray(paymentsRes.data) ? paymentsRes.data : []);
+      setPatients(Array.isArray(patientsRes.data) ? patientsRes.data : []);
+      setAppointments(Array.isArray(appointmentsRes.data) ? appointmentsRes.data : []);
+      setAuditLogs(Array.isArray(auditRes.data) ? auditRes.data.slice(0, 10) : []);
+      
+      // Calculate statistics
       const today = new Date().toDateString();
       const thisMonth = new Date().getMonth();
+      const thisWeekStart = new Date();
+      thisWeekStart.setDate(thisWeekStart.getDate() - thisWeekStart.getDay());
+      const thisWeekEnd = new Date();
+      thisWeekEnd.setDate(thisWeekEnd.getDate() + (6 - thisWeekEnd.getDay()));
       
       const dailyCount = appointmentsRes.data.filter(apt => 
         new Date(apt.date).toDateString() === today
@@ -78,25 +92,37 @@ const AdminDashboard = () => {
       
       const weeklyCount = appointmentsRes.data.filter(apt => {
         const aptDate = new Date(apt.date);
-        const weekStart = new Date();
-        weekStart.setDate(weekStart.getDate() - weekStart.getDay());
-        const weekEnd = new Date();
-        weekEnd.setDate(weekEnd.getDate() + (6 - weekEnd.getDay()));
-        return aptDate >= weekStart && aptDate <= weekEnd;
+        return aptDate >= thisWeekStart && aptDate <= thisWeekEnd;
       }).length;
       
       const monthlyCount = appointmentsRes.data.filter(apt => 
         new Date(apt.date).getMonth() === thisMonth
       ).length;
       
+      // Calculate total revenue from billing
+      const totalRevenue = billingRes.data.reduce((sum, b) => {
+        const amount = parseFloat(b.total_amount || b.amount || 0);
+        return sum + amount;
+      }, 0);
+      
+      // Calculate collection rate
+      const paidInvoices = billingRes.data.filter(b => 
+        b.status === 'paid' || b.status === 'Paid' || b.paid_amount >= b.total_amount
+      ).length;
+      const collectionRate = billingRes.data.length > 0 
+        ? (paidInvoices / billingRes.data.length) * 100 
+        : 0;
+      
       setStats({
         dailyAppointments: dailyCount,
         weeklyAppointments: weeklyCount,
         monthlyAppointments: monthlyCount,
         revenueGrowth: 12.5,
+        totalRevenue: totalRevenue,
+        collectionRate: collectionRate,
       });
     } catch (err) {
-      console.error(err);
+      console.error("Error fetching dashboard data:", err);
     } finally {
       setLoading(false);
     }
@@ -106,17 +132,85 @@ const AdminDashboard = () => {
     fetchData();
   }, []);
 
-  const totalIncome = payments.reduce((sum, p) => sum + parseFloat(p.amount || 0), 0);
-  const unpaidInvoices = billing.filter((b) => b.status === "unpaid").length;
-  const paidInvoices = billing.filter((b) => b.status === "paid").length;
-  const collectionRate = billing.length > 0 ? (paidInvoices / billing.length) * 100 : 0;
+  // Helper functions for data formatting
+  const getPatientFullName = (record) => {
+    return record.user_fullname || record.user_username || record.patient || 'Unknown';
+  };
 
+  const getPatientContact = (record) => {
+    return record.emergency_contact_phone || record.contact || 'N/A';
+  };
+
+  const getMedicalHistory = (record) => {
+    return record.medical_conditions || record.allergies || record.medical_history || '';
+  };
+
+  const getLastVisit = (record) => {
+    if (record.last_visit) return record.last_visit;
+    const patientAppointments = appointments.filter(apt => 
+      apt.user === record.user || apt.user_username === record.user_username
+    );
+    const completedAppointments = patientAppointments.filter(apt => apt.status === 'completed');
+    if (completedAppointments.length > 0) {
+      const lastVisit = new Date(Math.max(...completedAppointments.map(apt => new Date(apt.date))));
+      return lastVisit.toLocaleDateString();
+    }
+    return 'N/A';
+  };
+
+  const getInvoiceNumber = (bill) => {
+    return bill.invoice_number || `INV-${bill.id}`;
+  };
+
+  const getBillAmount = (bill) => {
+    return parseFloat(bill.total_amount || bill.amount || 0);
+  };
+
+  const getBillStatus = (bill) => {
+    if (bill.status === 'paid' || bill.status === 'Paid' || bill.paid_amount >= bill.total_amount) {
+      return 'paid';
+    }
+    if (bill.status === 'partial' || (bill.paid_amount > 0 && bill.paid_amount < bill.total_amount)) {
+      return 'partial';
+    }
+    if (bill.status === 'overdue') return 'overdue';
+    return 'unpaid';
+  };
+
+  const getPaymentAmount = (payment) => {
+    return parseFloat(payment.amount || 0);
+  };
+
+  const getPaymentMethod = (payment) => {
+    return payment.payment_method || payment.method || 'Cash';
+  };
+
+  const getPaymentTransactionId = (payment) => {
+    return payment.reference_number || payment.transaction_id || 'N/A';
+  };
+
+  const getPaymentDate = (payment) => {
+    return payment.payment_date || payment.created_at;
+  };
+
+  const getPaymentStatus = (payment) => {
+    return payment.status || 'completed';
+  };
+
+  // Transform appointments for calendar
   const calendarEvents = appointments.map(apt => ({
-    title: `${apt.patient_name || 'Patient'} - ${apt.service || 'Consultation'}`,
+    title: `${apt.user_username || 'Patient'} - ${apt.service || 'Consultation'}`,
     start: new Date(apt.date),
     end: new Date(new Date(apt.date).setHours(new Date(apt.date).getHours() + 1)),
     status: apt.status,
   }));
+
+  // Format audit log time
+  const formatAuditTime = (timestamp) => {
+    if (!timestamp) return 'N/A';
+    const date = new Date(timestamp);
+    return date.toLocaleString();
+  };
 
   return (
     <Box className="admin-dashboard-wrapper">
@@ -183,7 +277,7 @@ const AdminDashboard = () => {
                 </div>
                 <div className="stat-info">
                   <Typography variant="body2" className="stat-label">Total Revenue</Typography>
-                  <Typography variant="h3" className="stat-value">₱{totalIncome.toFixed(2)}</Typography>
+                  <Typography variant="h3" className="stat-value">₱{stats.totalRevenue.toFixed(2)}</Typography>
                   <div className="stat-trend up">
                     <ArrowUpward sx={{ fontSize: 12 }} />
                     <Typography variant="caption">{stats.revenueGrowth}% from last month</Typography>
@@ -197,7 +291,7 @@ const AdminDashboard = () => {
                 </div>
                 <div className="stat-info">
                   <Typography variant="body2" className="stat-label">Collection Rate</Typography>
-                  <Typography variant="h3" className="stat-value">{collectionRate.toFixed(1)}%</Typography>
+                  <Typography variant="h3" className="stat-value">{stats.collectionRate.toFixed(1)}%</Typography>
                 </div>
               </div>
               
@@ -207,7 +301,7 @@ const AdminDashboard = () => {
                 </div>
                 <div className="stat-info">
                   <Typography variant="body2" className="stat-label">Active Patients</Typography>
-                  <Typography variant="h3" className="stat-value">{records.length}</Typography>
+                  <Typography variant="h3" className="stat-value">{patients.length}</Typography>
                   <div className="stat-trend up">
                     <ArrowUpward sx={{ fontSize: 12 }} />
                     <Typography variant="caption">8.2% from last month</Typography>
@@ -221,7 +315,9 @@ const AdminDashboard = () => {
                 </div>
                 <div className="stat-info">
                   <Typography variant="body2" className="stat-label">Pending Invoices</Typography>
-                  <Typography variant="h3" className="stat-value">{unpaidInvoices}</Typography>
+                  <Typography variant="h3" className="stat-value">
+                    {billing.filter(b => getBillStatus(b) === 'unpaid').length}
+                  </Typography>
                 </div>
               </div>
             </div>
@@ -252,7 +348,7 @@ const AdminDashboard = () => {
                       style={{ height: 450 }}
                       className="custom-calendar"
                       eventPropGetter={(event) => ({
-                        className: `calendar-event ${event.status === 'completed' ? 'event-completed' : 'event-scheduled'}`,
+                        className: `calendar-event ${event.status === 'completed' ? 'event-completed' : event.status === 'confirmed' ? 'event-confirmed' : 'event-scheduled'}`,
                       })}
                     />
                   </div>
@@ -306,56 +402,104 @@ const AdminDashboard = () => {
                   <div className="subsection-header">
                     <Receipt sx={{ fontSize: 20, color: '#2ca6a4' }} />
                     <Typography variant="h6">Recent Billing</Typography>
-                    <Chip label={`${unpaidInvoices} Unpaid`} size="small" className="warning-chip" />
+                    <Chip 
+                      label={`${billing.filter(b => getBillStatus(b) !== 'paid').length} Unpaid`} 
+                      size="small" 
+                      className="warning-chip" 
+                    />
                   </div>
                   <TableContainer component={Paper} className="dashboard-table">
                     <Table>
                       <TableHead>
                         <TableRow>
                           <TableCell>Invoice #</TableCell>
+                          <TableCell>Patient</TableCell>
                           <TableCell>Amount</TableCell>
                           <TableCell>Status</TableCell>
                         </TableRow>
                       </TableHead>
                       <TableBody>
-                        {billing.slice(0, 5).map((b) => (
-                          <TableRow key={b.id} className="table-row">
-                            <TableCell>{b.invoice_number}</TableCell>
-                            <TableCell>₱{parseFloat(b.amount).toFixed(2)}</TableCell>
-                            <TableCell>
-                              <Chip 
-                                label={b.status} 
-                                size="small"
-                                className={b.status === 'paid' ? 'status-paid' : 'status-unpaid'}
-                                icon={b.status === 'paid' ? <Check sx={{ fontSize: 16 }} /> : <Close sx={{ fontSize: 16 }} />}
-                              />
-                            </TableCell>
+                        {billing.slice(0, 5).map((b) => {
+                          const status = getBillStatus(b);
+                          return (
+                            <TableRow key={b.id} className="table-row">
+                              <TableCell>{getInvoiceNumber(b)}</TableCell>
+                              <TableCell>{b.user_username || 'N/A'}</TableCell>
+                              <TableCell>₱{getBillAmount(b).toFixed(2)}</TableCell>
+                              <TableCell>
+                                <Chip 
+                                  label={status === 'partial' ? 'Partial' : status}
+                                  size="small"
+                                  className={
+                                    status === 'paid' ? 'status-paid' : 
+                                    status === 'partial' ? 'status-partial' : 
+                                    'status-unpaid'
+                                  }
+                                  icon={status === 'paid' ? <Check sx={{ fontSize: 16 }} /> : 
+                                        status === 'partial' ? <Schedule sx={{ fontSize: 16 }} /> : 
+                                        <Close sx={{ fontSize: 16 }} />}
+                                />
+                              </TableCell>
+                            </TableRow>
+                          );
+                        })}
+                        {billing.length === 0 && (
+                          <TableRow>
+                            <TableCell colSpan={4} align="center">No billing records found</TableCell>
                           </TableRow>
-                        ))}
+                        )}
                       </TableBody>
                     </Table>
                   </TableContainer>
                 </div>
 
-                {/* Payments List */}
+                {/* Payments Table (changed from List to Table) */}
                 <div className="payments-wrapper">
                   <div className="subsection-header">
                     <Payment sx={{ fontSize: 20, color: '#2ca6a4' }} />
                     <Typography variant="h6">Recent Payments</Typography>
+                    <Chip 
+                      label={`${payments.length} Total`} 
+                      size="small" 
+                      className="info-chip" 
+                    />
                   </div>
-                  <List className="payments-list">
-                    {payments.slice(0, 5).map((p) => (
-                      <ListItem key={p.id} className="payment-item">
-                        <ListItemText
-                          primary={<Typography fontWeight={500}>{p.method} - {p.transaction_id || 'N/A'}</Typography>}
-                          secondary={`Date: ${new Date(p.payment_date).toLocaleDateString()}`}
-                        />
-                        <Typography variant="body1" className="payment-amount">
-                          ₱{parseFloat(p.amount).toFixed(2)}
-                        </Typography>
-                      </ListItem>
-                    ))}
-                  </List>
+                  <TableContainer component={Paper} className="dashboard-table">
+                    <Table>
+                      <TableHead>
+                        <TableRow>
+                          <TableCell>Transaction ID</TableCell>
+                          <TableCell>Method</TableCell>
+                          <TableCell>Amount</TableCell>
+                          <TableCell>Date</TableCell>
+                          <TableCell>Status</TableCell>
+                        </TableRow>
+                      </TableHead>
+                      <TableBody>
+                        {payments.slice(0, 5).map((p) => (
+                          <TableRow key={p.id} className="table-row">
+                            <TableCell>{getPaymentTransactionId(p)}</TableCell>
+                            <TableCell>{getPaymentMethod(p)}</TableCell>
+                            <TableCell>₱{getPaymentAmount(p).toFixed(2)}</TableCell>
+                            <TableCell>{new Date(getPaymentDate(p)).toLocaleDateString()}</TableCell>
+                            <TableCell>
+                              <Chip 
+                                label={getPaymentStatus(p)}
+                                size="small"
+                                className={getPaymentStatus(p) === 'completed' ? 'status-paid' : 'status-partial'}
+                                icon={getPaymentStatus(p) === 'completed' ? <Check sx={{ fontSize: 16 }} /> : <Schedule sx={{ fontSize: 16 }} />}
+                              />
+                            </TableCell>
+                          </TableRow>
+                        ))}
+                        {payments.length === 0 && (
+                          <TableRow>
+                            <TableCell colSpan={5} align="center">No payment records found</TableCell>
+                          </TableRow>
+                        )}
+                      </TableBody>
+                    </Table>
+                  </TableContainer>
                 </div>
               </div>
             </div>
@@ -367,7 +511,7 @@ const AdminDashboard = () => {
                   <HealthAndSafety sx={{ color: '#2ca6a4' }} />
                   <Typography variant="h5" className="section-title">Patient Records</Typography>
                 </div>
-                <Chip label={`${records.length} Total Patients`} size="small" className="info-chip" />
+                <Chip label={`${patients.length} Total Patients`} size="small" className="info-chip" />
               </div>
               
               <TableContainer component={Paper} className="dashboard-table">
@@ -381,21 +525,107 @@ const AdminDashboard = () => {
                     </TableRow>
                   </TableHead>
                   <TableBody>
-                    {records.map((r) => (
+                    {patients.map((r) => (
                       <TableRow key={r.id} className="table-row">
                         <TableCell>
-                          <Typography fontWeight={600} color="#1a5f5d">{r.patient}</Typography>
-                        </TableCell>
-                        <TableCell>{r.contact || 'N/A'}</TableCell>
-                        <TableCell>
-                          <Typography variant="body2" color="textSecondary">
-                            {r.medical_history?.substring(0, 50) || 'No history recorded'}
-                            {r.medical_history?.length > 50 && '...'}
+                          <Typography fontWeight={600} color="#1a5f5d">
+                            {getPatientFullName(r)}
                           </Typography>
                         </TableCell>
-                        <TableCell>{r.last_visit ? new Date(r.last_visit).toLocaleDateString() : 'N/A'}</TableCell>
+                        <TableCell>{getPatientContact(r)}</TableCell>
+                        <TableCell>
+                          <Typography variant="body2" color="textSecondary">
+                            {getMedicalHistory(r).substring(0, 50) || 'No history recorded'}
+                            {getMedicalHistory(r).length > 50 && '...'}
+                          </Typography>
+                        </TableCell>
+                        <TableCell>{getLastVisit(r)}</TableCell>
                       </TableRow>
                     ))}
+                    {patients.length === 0 && (
+                      <TableRow>
+                        <TableCell colSpan={4} align="center">No patient records found</TableCell>
+                      </TableRow>
+                    )}
+                  </TableBody>
+                </Table>
+              </TableContainer>
+            </div>
+
+            {/* Audit Log Section - Below all content */}
+            <div className="audit-section fade-up">
+              <div className="section-header">
+                <div className="section-title-wrapper">
+                  <History sx={{ color: '#2ca6a4' }} />
+                  <Typography variant="h5" className="section-title">Audit Log (Recent Activity)</Typography>
+                </div>
+                <Chip label="Non-working - Demo Data" size="small" className="warning-chip" />
+              </div>
+              
+              <TableContainer component={Paper} className="dashboard-table">
+                <Table>
+                  <TableHead>
+                    <TableRow>
+                      <TableCell><AccessTime sx={{ fontSize: 16, mr: 0.5 }} /> Timestamp</TableCell>
+                      <TableCell>User</TableCell>
+                      <TableCell>Action</TableCell>
+                      <TableCell>Details</TableCell>
+                      <TableCell>IP Address</TableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {auditLogs.length > 0 ? (
+                      auditLogs.map((log) => (
+                        <TableRow key={log.id} className="table-row">
+                          <TableCell>{formatAuditTime(log.created_at)}</TableCell>
+                          <TableCell>{log.user_username || log.user || 'System'}</TableCell>
+                          <TableCell>
+                            <Chip 
+                              label={log.action || log.action_type || 'Unknown'}
+                              size="small"
+                              className={
+                                log.action === 'CREATE' ? 'status-paid' :
+                                log.action === 'UPDATE' ? 'status-partial' :
+                                log.action === 'DELETE' ? 'status-unpaid' : 'info-chip'
+                              }
+                            />
+                          </TableCell>
+                          <TableCell>{log.details || log.description || '-'}</TableCell>
+                          <TableCell>{log.ip_address || '-'}</TableCell>
+                        </TableRow>
+                      ))
+                    ) : (
+                      <>
+                        {/* Demo audit log entries */}
+                        {[1, 2, 3, 4, 5].map((i) => (
+                          <TableRow key={i} className="table-row">
+                            <TableCell>{new Date(Date.now() - i * 3600000).toLocaleString()}</TableCell>
+                            <TableCell>demo_user_{i}</TableCell>
+                            <TableCell>
+                              <Chip 
+                                label={i === 1 ? 'CREATE' : i === 2 ? 'UPDATE' : i === 3 ? 'DELETE' : 'LOGIN'}
+                                size="small"
+                                className={i === 1 ? 'status-paid' : i === 2 ? 'status-partial' : 'status-unpaid'}
+                              />
+                            </TableCell>
+                            <TableCell>
+                              {i === 1 ? 'Created new appointment' : 
+                               i === 2 ? 'Updated patient record' : 
+                               i === 3 ? 'Cancelled appointment' : 
+                               'User logged in'}
+                            </TableCell>
+                            <TableCell>192.168.1.{100 + i}</TableCell>
+                          </TableRow>
+                        ))}
+                        <TableRow>
+                          <TableCell colSpan={5} align="center" sx={{ color: '#b0b0b0', py: 3 }}>
+                            <History sx={{ fontSize: 40, opacity: 0.5, mb: 1 }} />
+                            <Typography variant="body2">Audit log feature coming soon. This is demo data.</Typography>
+                            <Typography variant="caption">Activity logging will be implemented in the next phase.</Typography>
+                          </TableCell>
+                        </TableRow>
+                      </>
+                    )}
                   </TableBody>
                 </Table>
               </TableContainer>

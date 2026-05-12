@@ -1,0 +1,952 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Barnabas Dental Clinic | Admin & Dentist Dashboard</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Poppins:wght@600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background: linear-gradient(135deg, #1a5f5d 0%, #2ca6a4 50%, #3dbebc 100%);
+      font-family: 'Inter', sans-serif;
+      color: #1a2c3e;
+      overflow-x: hidden;
+      min-height: 100vh;
+    }
+
+    .dashboard-bg-animation {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    .dashboard-bg-circle {
+      position: absolute;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.08);
+      animation: dashboardFloat 20s infinite ease-in-out;
+    }
+
+    .dashboard-bg-circle-1 { width: 600px; height: 600px; top: -200px; right: -200px; animation-delay: 0s; }
+    .dashboard-bg-circle-2 { width: 500px; height: 500px; bottom: -150px; left: -150px; animation-delay: -3s; }
+    .dashboard-bg-circle-3 { width: 400px; height: 400px; top: 30%; left: 15%; animation-delay: -7s; }
+    .dashboard-bg-circle-4 { width: 350px; height: 350px; bottom: 20%; right: 10%; animation-delay: -12s; }
+    .dashboard-bg-circle-5 { width: 250px; height: 250px; top: 60%; left: 70%; animation-delay: -5s; }
+    .dashboard-bg-circle-6 { width: 180px; height: 180px; top: 15%; right: 25%; animation-delay: -9s; }
+
+    @keyframes dashboardFloat {
+      0%, 100% { transform: translate(0, 0) scale(1); }
+      25% { transform: translate(30px, -30px) scale(1.05); }
+      50% { transform: translate(-20px, 20px) scale(0.95); }
+      75% { transform: translate(20px, 30px) scale(1.02); }
+    }
+
+    .dashboard-particles {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 0;
+      pointer-events: none;
+      overflow: hidden;
+    }
+
+    .dashboard-particle {
+      position: absolute;
+      bottom: -10px;
+      width: 3px;
+      height: 3px;
+      background: rgba(255, 255, 255, 0.5);
+      border-radius: 50%;
+      animation: dashboardFloatParticle linear infinite;
+    }
+
+    @keyframes dashboardFloatParticle {
+      0% { transform: translateY(0) translateX(0); opacity: 0; }
+      10% { opacity: 1; }
+      90% { opacity: 1; }
+      100% { transform: translateY(-100vh) translateX(20px); opacity: 0; }
+    }
+
+    .app-container {
+      display: flex;
+      min-height: 100vh;
+      position: relative;
+      z-index: 1;
+    }
+
+    .sidebar {
+      width: 280px;
+      background: rgba(13, 42, 42, 0.95);
+      backdrop-filter: blur(20px);
+      color: #e0f2fe;
+      flex-shrink: 0;
+      transition: all 0.3s ease;
+      box-shadow: 4px 0 25px rgba(0, 0, 0, 0.1);
+      z-index: 10;
+      border-right: 1px solid rgba(44, 166, 164, 0.2);
+    }
+
+    .logo-area {
+      padding: 28px 24px;
+      border-bottom: 1px solid rgba(44, 166, 164, 0.2);
+      margin-bottom: 24px;
+      background: linear-gradient(135deg, rgba(44, 166, 164, 0.1), transparent);
+    }
+
+    .logo-area h2 {
+      font-family: 'Poppins', sans-serif;
+      font-weight: 700;
+      font-size: 1.6rem;
+      letter-spacing: -0.3px;
+      background: linear-gradient(135deg, #fff, #2ca6a4);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+    
+    .logo-area p {
+      font-size: 0.75rem;
+      opacity: 0.7;
+      margin-top: 6px;
+      color: #9ca3af;
+    }
+
+    .nav-menu {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      padding: 0 20px;
+    }
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 12px 16px;
+      border-radius: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      color: #cbd5f5;
+      position: relative;
+    }
+
+    .nav-item i {
+      width: 24px;
+      font-size: 1.2rem;
+    }
+
+    .nav-item.active {
+      background: rgba(44, 166, 164, 0.18);
+      color: #2ca6a4;
+    }
+
+    .nav-item.active::before {
+      content: '';
+      position: absolute;
+      left: -20px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 3px;
+      height: 22px;
+      background: #2ca6a4;
+      border-radius: 0 3px 3px 0;
+    }
+
+    .nav-item.active i {
+      color: #2ca6a4;
+    }
+
+    .nav-item:hover:not(.active) {
+      background: rgba(44, 166, 164, 0.12);
+      color: #2ca6a4;
+      transform: translateX(5px);
+    }
+
+    .main-content {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      overflow-y: auto;
+    }
+
+    .top-bar {
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(20px);
+      padding: 16px 32px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+      border-bottom: 1px solid rgba(44, 166, 164, 0.2);
+      margin: 0 0 24px 0;
+      border-radius: 0 0 24px 24px;
+      animation: slideDown 0.6s ease-out;
+    }
+
+    @keyframes slideDown {
+      from { opacity: 0; transform: translateY(-30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .page-title {
+      font-size: 1.6rem;
+      font-weight: 700;
+      color: #1a5f5d;
+    }
+
+    .admin-badge {
+      background: linear-gradient(135deg, #2ca6a4, #1a5f5d);
+      padding: 8px 24px;
+      border-radius: 50px;
+      font-weight: 600;
+      color: white;
+      font-size: 0.85rem;
+      box-shadow: 0 4px 15px rgba(44, 166, 164, 0.3);
+    }
+
+    .dashboard-panel {
+      padding: 0 32px 32px 32px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .stats-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 24px;
+      margin-bottom: 32px;
+    }
+
+    .stat-card {
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(10px);
+      flex: 1;
+      min-width: 180px;
+      padding: 24px;
+      border-radius: 24px;
+      border: 1px solid rgba(44, 166, 164, 0.15);
+      transition: all 0.3s ease;
+      animation: fadeUp 0.6s ease-out forwards;
+      opacity: 0;
+    }
+
+    .stat-card:hover {
+      transform: translateY(-5px);
+      border-color: rgba(44, 166, 164, 0.3);
+      box-shadow: 0 10px 30px rgba(44, 166, 164, 0.15);
+    }
+
+    .stat-card:nth-child(1) { animation-delay: 0.05s; }
+    .stat-card:nth-child(2) { animation-delay: 0.1s; }
+    .stat-card:nth-child(3) { animation-delay: 0.15s; }
+    .stat-card:nth-child(4) { animation-delay: 0.2s; }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .stat-card h4 {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: #6c757d;
+      margin-bottom: 12px;
+      font-weight: 600;
+    }
+
+    .stat-number {
+      font-size: 2.3rem;
+      font-weight: 800;
+      color: #1a5f5d;
+    }
+
+    .section-card {
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(10px);
+      border-radius: 24px;
+      padding: 24px 28px;
+      margin-bottom: 32px;
+      border: 1px solid rgba(44, 166, 164, 0.15);
+      transition: all 0.3s ease;
+    }
+
+    .section-card:hover {
+      border-color: rgba(44, 166, 164, 0.3);
+      box-shadow: 0 8px 30px rgba(44, 166, 164, 0.1);
+    }
+
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 24px;
+      flex-wrap: wrap;
+      gap: 16px;
+      padding-bottom: 16px;
+      border-bottom: 2px solid rgba(44, 166, 164, 0.2);
+    }
+
+    .section-header h3 {
+      font-weight: 700;
+      font-size: 1.4rem;
+      color: #1a5f5d;
+      margin: 0;
+    }
+
+    .badge-pill {
+      background: linear-gradient(135deg, #2ca6a4, #1a5f5d);
+      padding: 6px 16px;
+      border-radius: 50px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: white;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    th, td {
+      text-align: left;
+      padding: 14px 12px;
+      border-bottom: 1px solid rgba(44, 166, 164, 0.1);
+    }
+
+    th {
+      font-weight: 700;
+      color: #1a5f5d;
+      background: rgba(44, 166, 164, 0.05);
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    tr:hover {
+      background: rgba(44, 166, 164, 0.05);
+    }
+
+    .btn-sm {
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      font-size: 1rem;
+      margin: 0 6px;
+      color: #2ca6a4;
+      transition: all 0.2s ease;
+      padding: 6px;
+      border-radius: 8px;
+    }
+
+    .btn-sm:hover {
+      color: #1a5f5d;
+      transform: scale(1.1);
+      background: rgba(44, 166, 164, 0.1);
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #2ca6a4, #1a5f5d);
+      border: none;
+      padding: 10px 24px;
+      border-radius: 50px;
+      color: white;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-size: 0.85rem;
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(44, 166, 164, 0.4);
+    }
+
+    .progress-track {
+      background: rgba(44, 166, 164, 0.15);
+      border-radius: 20px;
+      height: 8px;
+      width: 100%;
+      margin: 12px 0;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      background: linear-gradient(90deg, #2ca6a4, #3dbebc);
+      width: 0%;
+      height: 8px;
+      border-radius: 20px;
+      transition: width 0.5s ease;
+    }
+
+    .record-payment-btn {
+      background: linear-gradient(135deg, #10b981, #059669);
+      color: white;
+      border: none;
+      padding: 6px 16px;
+      border-radius: 30px;
+      font-size: 0.7rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    
+    .record-payment-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+    }
+
+    .flex-between {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .report-buttons {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .log-area {
+      background: #f8fafc;
+      padding: 16px;
+      border-radius: 20px;
+      max-height: 200px;
+      overflow-y: auto;
+      font-family: monospace;
+      font-size: 0.8rem;
+      border: 1px solid rgba(44, 166, 164, 0.15);
+    }
+
+    .info-note {
+      background: linear-gradient(135deg, #fef9e6, #fff8e6);
+      border-left: 4px solid #f59e0b;
+      padding: 16px 20px;
+      border-radius: 20px;
+      margin-bottom: 24px;
+      font-size: 0.85rem;
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+    }
+    
+    .info-note i {
+      font-size: 1.3rem;
+      color: #f59e0b;
+    }
+
+    /* Modal styles for patient registration */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.6);
+      backdrop-filter: blur(4px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+    }
+    .modal-content {
+      background: white;
+      border-radius: 28px;
+      padding: 28px;
+      max-width: 500px;
+      width: 90%;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+    }
+    .modal-content h3 {
+      color: #1a5f5d;
+      margin-bottom: 20px;
+      font-weight: 700;
+    }
+    .modal-content input, .modal-content select, .modal-content textarea {
+      width: 100%;
+      padding: 12px 16px;
+      border-radius: 16px;
+      border: 1px solid #ddd;
+      margin-bottom: 14px;
+      font-family: inherit;
+      font-size: 0.9rem;
+    }
+    .modal-content input:focus, .modal-content textarea:focus {
+      outline: none;
+      border-color: #2ca6a4;
+    }
+    .modal-actions {
+      display: flex;
+      gap: 12px;
+      justify-content: flex-end;
+      margin-top: 8px;
+    }
+
+    ::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: rgba(255, 255, 255, 0.3);
+      border-radius: 10px;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: #2ca6a4;
+      border-radius: 10px;
+    }
+
+    @media (max-width: 800px) {
+      .sidebar { width: 80px; }
+      .sidebar .logo-area p, .sidebar .nav-item span { display: none; }
+      .logo-area h2 { font-size: 1.2rem; text-align: center; }
+      .dashboard-panel { padding: 0 16px 16px 16px; }
+      .page-title { font-size: 1.2rem; }
+      .stat-number { font-size: 1.6rem; }
+    }
+  </style>
+</head>
+<body>
+<div class="app-container">
+  <div class="dashboard-bg-animation">
+    <div class="dashboard-bg-circle dashboard-bg-circle-1"></div>
+    <div class="dashboard-bg-circle dashboard-bg-circle-2"></div>
+    <div class="dashboard-bg-circle dashboard-bg-circle-3"></div>
+    <div class="dashboard-bg-circle dashboard-bg-circle-4"></div>
+    <div class="dashboard-bg-circle dashboard-bg-circle-5"></div>
+    <div class="dashboard-bg-circle dashboard-bg-circle-6"></div>
+  </div>
+  <div class="dashboard-particles" id="particles"></div>
+
+  <div class="sidebar">
+    <div class="logo-area">
+      <h2><i class="fas fa-tooth"></i> Barnabas</h2>
+      <p>Admin · Dentist Panel</p>
+    </div>
+    <div class="nav-menu">
+      <div class="nav-item active" data-tab="overview"><i class="fas fa-tachometer-alt"></i> <span>Dashboard</span></div>
+      <div class="nav-item" data-tab="patients"><i class="fas fa-users"></i> <span>Patients & Records</span></div>
+      <div class="nav-item" data-tab="treatments"><i class="fas fa-notes-medical"></i> <span>Treatments & Progress</span></div>
+      <div class="nav-item" data-tab="billing"><i class="fas fa-credit-card"></i> <span>Payment Approval</span></div>
+      <div class="nav-item" data-tab="reports"><i class="fas fa-chart-line"></i> <span>Reports & Analytics</span></div>
+      <div class="nav-item" data-tab="system"><i class="fas fa-shield-alt"></i> <span>System Control</span></div>
+      <div class="nav-item" data-tab="accounts"><i class="fas fa-user-cog"></i> <span>Manage Accounts</span></div>
+    </div>
+  </div>
+
+  <div class="main-content">
+    <div class="top-bar">
+      <div class="page-title" id="mainPageTitle">Admin Dashboard</div>
+      <div class="admin-badge"><i class="fas fa-user-md"></i> Dr. Barnabas (Full Access)</div>
+    </div>
+    <div class="dashboard-panel" id="dynamicContent"></div>
+  </div>
+</div>
+
+<script>
+  // ==================== DATA MODELS ====================
+  let patients = [
+    { id: 1, name: "Emily Watson", age: 24, phone: "+63 912 345 6789", treatment: "Braces", downPayment: 5500, paymentStatus: "pending", progress: 35, lastVisit: "2025-03-10", nextVisit: "2025-04-20", medicalHistory: "No allergies", notes: "Initial alignment phase - Upper and lower brackets placed." },
+    { id: 2, name: "James Miller", age: 31, phone: "+63 923 456 7890", treatment: "Braces", downPayment: 8000, paymentStatus: "approved", progress: 70, lastVisit: "2025-04-01", nextVisit: "2025-05-01", medicalHistory: "Mild asthma", notes: "Mid treatment refinement - Good compliance." },
+    { id: 3, name: "Sophia Garcia", age: 19, phone: "+63 934 567 8901", treatment: "Braces", downPayment: 5000, paymentStatus: "pending", progress: 12, lastVisit: "2025-04-10", nextVisit: "2025-05-10", medicalHistory: "None", notes: "Upper braces placed only. Lower scheduled next month." }
+  ];
+
+  let appointments = [
+    { id: 101, patient: "Emily Watson", date: "2025-04-18", time: "10:30 AM", type: "Adjustment", status: "Scheduled" },
+    { id: 102, patient: "James Miller", date: "2025-04-19", time: "02:00 PM", type: "Progress Check", status: "Confirmed" },
+    { id: 103, patient: "Sophia Garcia", date: "2025-04-20", time: "09:15 AM", type: "Braces tightening", status: "Pending" }
+  ];
+
+  let activityLogs = [
+    { time: "2025-04-15 08:23", action: "Admin: Updated patient Emily's treatment notes" },
+    { time: "2025-04-15 09:45", action: "System: Daily backup completed" },
+    { time: "2025-04-14 14:12", action: "Payment recorded for James Miller (down payment for braces via Cash)" },
+    { time: "2025-04-14 10:05", action: "Receptionist account created by Admin" }
+  ];
+
+  let financialTransactions = [
+    { id: "TXN001", patient: "Emily Watson", amount: 5500, type: "Down Payment (Braces)", status: "Pending Approval", paymentMethod: null },
+    { id: "TXN002", patient: "Sophia Garcia", amount: 5000, type: "Down Payment (Braces)", status: "Pending Approval", paymentMethod: null }
+  ];
+
+  let userAccounts = [
+    { username: "reception_jane", role: "Receptionist", status: "active" },
+    { username: "admin_david", role: "Admin", status: "active" },
+    { username: "reception_mike", role: "Receptionist", status: "inactive" }
+  ];
+
+  // Adjustment Records for tracking
+  let adjustmentRecords = [
+    { id: 1, patientId: 1, patientName: "Emily Watson", date: "2025-03-10", adjustmentType: "Initial Placement", notes: "Upper and lower brackets placed", nextAdjustment: "2025-04-20" },
+    { id: 2, patientId: 2, patientName: "James Miller", date: "2025-04-01", adjustmentType: "Wire Change", notes: "Changed to thicker wire", nextAdjustment: "2025-05-01" }
+  ];
+
+  let orthodonticProgress = [
+    { patientId: 1, patientName: "Emily Watson", date: "2025-03-10", notes: "Upper and lower brackets placed. 35% complete", stage: "Alignment Phase" },
+    { patientId: 2, patientName: "James Miller", date: "2025-04-01", notes: "Elastics introduced. 70% complete", stage: "Correction Phase" }
+  ];
+
+  function addLogEntry(action) {
+    const now = new Date().toISOString().slice(0,16).replace('T',' ');
+    activityLogs.unshift({ time: now, action });
+    if(activityLogs.length > 20) activityLogs.pop();
+    renderCurrentView();
+  }
+
+  function updateProgress(patientId, newProgress) {
+    const patient = patients.find(p => p.id === patientId);
+    if (patient && newProgress >=0 && newProgress <=100) {
+      patient.progress = newProgress;
+      addLogEntry(`Dentist updated orthodontic progress for ${patient.name} → ${newProgress}%`);
+    }
+  }
+
+  function approveDownPayment(transactionId, paymentMethod) {
+    const transaction = financialTransactions.find(t => t.id === transactionId);
+    if (transaction && transaction.status === "Pending Approval") {
+      transaction.status = "Approved";
+      transaction.paymentMethod = paymentMethod;
+      const relatedPatient = patients.find(p => p.name === transaction.patient);
+      if (relatedPatient) relatedPatient.paymentStatus = "approved";
+      addLogEntry(`Dentist APPROVED down payment for ${transaction.patient} (₱${transaction.amount}) via ${paymentMethod}`);
+      alert(`✅ Down payment approved for ${transaction.patient}.\nMethod: ${paymentMethod}\nAmount: ₱${transaction.amount}\n\nPatient can now proceed with treatment.`);
+      renderCurrentView();
+    }
+  }
+
+  function rejectDownPayment(transactionId) {
+    const transaction = financialTransactions.find(t => t.id === transactionId);
+    if (transaction && transaction.status === "Pending Approval") {
+      transaction.status = "Rejected";
+      addLogEntry(`Dentist REJECTED down payment for ${transaction.patient} - Patient notified to settle payment.`);
+      alert(`❌ Down payment rejected for ${transaction.patient}. Please coordinate with patient for payment.`);
+      renderCurrentView();
+    }
+  }
+
+  function getStats() {
+    const pendingApprovals = financialTransactions.filter(t => t.status === "Pending Approval").length;
+    const totalPatients = patients.length;
+    const upcomingAppointments = appointments.filter(a => new Date(a.date) >= new Date()).length;
+    const avgProgress = patients.length ? Math.round(patients.reduce((sum,p)=> sum + p.progress,0)/patients.length) : 0;
+    return { pendingApprovals, totalPatients, upcomingAppointments, avgProgress };
+  }
+
+  let activeTab = "overview";
+
+  function renderCurrentView() {
+    const container = document.getElementById("dynamicContent");
+    const titleMap = {
+      overview: "🏥 Admin & Dentist Dashboard - Full System Control",
+      patients: "🦷 Complete Patient Records Management (Digital Database)",
+      treatments: "📋 Treatment History & Orthodontic Braces Progress Monitoring",
+      billing: "💰 Payment Approval System - Down Payments for Braces (Dentist Confirmation Required)",
+      reports: "📊 Reports & Analytics (Daily/Weekly/Monthly/Quarterly)",
+      system: "⚙️ System Control & Data Security (Role-Based Access)",
+      accounts: "👥 Manage User Accounts (Receptionist / Admin)"
+    };
+    document.getElementById("mainPageTitle").innerHTML = titleMap[activeTab] || "Admin Dashboard";
+
+    if (activeTab === "overview") renderOverview(container);
+    else if (activeTab === "patients") renderPatients(container);
+    else if (activeTab === "treatments") renderTreatments(container);
+    else if (activeTab === "billing") renderBilling(container);
+    else if (activeTab === "reports") renderReports(container);
+    else if (activeTab === "system") renderSystem(container);
+    else if (activeTab === "accounts") renderAccounts(container);
+  }
+
+  // OVERVIEW: Replaced Clear Logs with Download Logs and View Logs buttons
+  function renderOverview(container) {
+    const stats = getStats();
+    container.innerHTML = `
+      <div class="stats-row">
+        <div class="stat-card"><h4><i class="fas fa-users"></i> Total Patients</h4><div class="stat-number">${stats.totalPatients}</div></div>
+        <div class="stat-card"><h4><i class="fas fa-calendar-check"></i> Upcoming Appointments</h4><div class="stat-number">${stats.upcomingAppointments}</div></div>
+        <div class="stat-card"><h4><i class="fas fa-dollar-sign"></i> Pending Down Payment Approvals</h4><div class="stat-number">${stats.pendingApprovals}</div></div>
+        <div class="stat-card"><h4><i class="fas fa-chart-simple"></i> Avg Orthodontic Progress</h4><div class="stat-number">${stats.avgProgress}%</div></div>
+      </div>
+      <div class="section-card">
+        <div class="section-header"><h3>📅 Daily Appointment Schedule</h3><span class="badge-pill">Dentist Oversight</span></div>
+        <table style="width:100%">
+          <thead><tr><th>Patient</th><th>Date</th><th>Time</th><th>Procedure Type</th><th>Status</th></tr></thead>
+          <tbody>${appointments.map(apt => ` <tr><td>${apt.patient}</td><td>${apt.date}</td><td>${apt.time}</td><td>${apt.type}</td><td>${apt.status}</td>`).join('')}</tbody>
+        </table>
+      </div>
+      <div class="section-card">
+        <div class="section-header"><h3>📋 Recent Activity Logs (Audit Trail)</h3>
+          <div style="display: flex; gap: 10px;">
+            <button class="btn-primary" id="downloadLogsBtn" style="background:#5f7f9a;"><i class="fas fa-download"></i> Download Logs</button>
+            <button class="btn-primary" id="viewLogsBtn" style="background:#5f7f9a;"><i class="fas fa-eye"></i> View Logs</button>
+          </div>
+        </div>
+        <div class="log-area" id="activityLogList">${activityLogs.map(l => `<div>🕒 ${l.time} → ${l.action}</div>`).join('')}</div>
+      </div>
+    `;
+    // Download Logs functionality
+    document.getElementById("downloadLogsBtn")?.addEventListener("click", () => {
+      let logText = "=== BARNAS DENTAL CLINIC ACTIVITY LOGS ===\n";
+      logText += `Export Date: ${new Date().toLocaleString()}\n`;
+      logText += "=".repeat(60) + "\n\n";
+      activityLogs.forEach(l => {
+        logText += `[${l.time}] ${l.action}\n`;
+      });
+      logText += "\n" + "=".repeat(60) + "\n";
+      logText += `Total Log Entries: ${activityLogs.length}\n`;
+      const blob = new Blob([logText], { type: "text/plain" });
+      const link = document.createElement("a");
+      link.href = URL.createObjectURL(blob);
+      link.download = `activity_logs_${new Date().toISOString().slice(0,19).replace(/:/g, '-')}.txt`;
+      link.click();
+      URL.revokeObjectURL(link.href);
+      addLogEntry("Admin downloaded activity logs");
+      alert("✅ Logs downloaded successfully.");
+    });
+    // View Logs functionality (full logs in alert with scrollable view)
+    document.getElementById("viewLogsBtn")?.addEventListener("click", () => {
+      let logText = "📋 COMPLETE ACTIVITY LOGS 📋\n";
+      logText += "=".repeat(50) + "\n\n";
+      if(activityLogs.length === 0) {
+        logText += "No activity logs available.\n";
+      } else {
+        activityLogs.forEach(l => {
+          logText += `🕒 ${l.time}\n   → ${l.action}\n\n`;
+        });
+      }
+      logText += "=".repeat(50) + `\nTotal: ${activityLogs.length} entries`;
+      alert(logText);
+    });
+  }
+
+  // PATIENT REGISTRATION - MODAL FORM (unchanged)
+  function renderPatients(container) {
+    container.innerHTML = `
+      <div class="section-card">
+        <div class="section-header"><h3>📌 Digital Patient Registry</h3><button class="btn-primary" id="openRegModalBtn"><i class="fas fa-plus"></i> Register New Patient</button></div>
+        <div style="overflow-x: auto;">
+          <table style="width:100%">
+            <thead><tr><th>ID</th><th>Name</th><th>Age</th><th>Phone</th><th>Treatment</th><th>Down Payment Status</th><th>Progress</th><th>Last Visit</th><th>Actions</th></tr></thead>
+            <tbody id="patientTableBody"></tbody>
+          </table>
+        </div>
+      </div>
+    `;
+    const tbody = document.getElementById("patientTableBody");
+    function renderTable() {
+      tbody.innerHTML = patients.map(p => `
+        <tr>
+          <td>${p.id}</td><td>${p.name}</td><td>${p.age}</td><td>${p.phone}</td><td>${p.treatment}</td>
+          <td><span class="badge-pill" style="background:${p.paymentStatus==='approved'?'#10b981':'#f59e0b'}">${p.paymentStatus}</span></td>
+          <td><div class="progress-track"><div class="progress-fill" style="width:${p.progress}%"></div></div>${p.progress}%</td>
+          <td>${p.lastVisit}</td>
+          <td><button class="btn-sm editPatient" data-id="${p.id}"><i class="fas fa-edit"></i></button> 
+          <button class="btn-sm viewHistory" data-id="${p.id}"><i class="fas fa-stethoscope"></i></button></td>
+        </tr>
+      `).join('');
+      document.querySelectorAll('.editPatient').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const id = parseInt(btn.dataset.id);
+          const patient = patients.find(p=>p.id===id);
+          const newName = prompt("Update patient name:", patient.name);
+          if(newName) patient.name = newName;
+          const newMedical = prompt("Update medical history:", patient.medicalHistory);
+          if(newMedical) patient.medicalHistory = newMedical;
+          addLogEntry(`Updated patient record #${id}`);
+          renderTable();
+        });
+      });
+      document.querySelectorAll('.viewHistory').forEach(btn=>{
+        btn.addEventListener('click',()=>{
+          const id = parseInt(btn.dataset.id);
+          const p = patients.find(p=>p.id===id);
+          alert(`📄 Patient: ${p.name}\n🩺 Medical History: ${p.medicalHistory}\n📝 Treatment Notes: ${p.notes}\n📅 Last Visit: ${p.lastVisit}\n📊 Progress: ${p.progress}%`);
+        });
+      });
+    }
+    renderTable();
+    
+    document.getElementById("openRegModalBtn")?.addEventListener("click", () => {
+      const modalDiv = document.createElement("div");
+      modalDiv.className = "modal-overlay";
+      modalDiv.innerHTML = `
+        <div class="modal-content">
+          <h3><i class="fas fa-user-plus"></i> Register New Patient</h3>
+          <input type="text" id="regName" placeholder="Full Name *">
+          <input type="number" id="regAge" placeholder="Age *">
+          <input type="text" id="regPhone" placeholder="Phone Number *">
+          <input type="text" id="regTreatment" placeholder="Treatment (Braces/Cleaning)" value="Braces">
+          <textarea id="regMedicalHistory" rows="2" placeholder="Medical History (allergies, conditions)"></textarea>
+          <input type="date" id="regLastVisit" placeholder="Last Visit">
+          <input type="date" id="regNextVisit" placeholder="Next Visit">
+          <textarea id="regNotes" rows="2" placeholder="Initial Treatment Notes"></textarea>
+          <div class="modal-actions">
+            <button id="cancelModalBtn" style="background:#e2e8f0; border:none; padding:8px 20px; border-radius:30px;">Cancel</button>
+            <button class="btn-primary" id="confirmRegisterBtn">Register Patient</button>
+          </div>
+        </div>
+      `;
+      document.body.appendChild(modalDiv);
+      document.getElementById("cancelModalBtn")?.addEventListener("click", () => modalDiv.remove());
+      document.getElementById("confirmRegisterBtn")?.addEventListener("click", () => {
+        const name = document.getElementById("regName")?.value.trim();
+        const age = parseInt(document.getElementById("regAge")?.value);
+        const phone = document.getElementById("regPhone")?.value.trim();
+        if(!name || !age || !phone) { alert("Please fill Name, Age, and Phone"); return; }
+        const newId = patients.length ? Math.max(...patients.map(p=>p.id)) + 1 : 4;
+        patients.push({
+          id: newId, name, age, phone,
+          treatment: document.getElementById("regTreatment")?.value || "Consultation",
+          downPayment: 0, paymentStatus: "pending", progress: 0,
+          lastVisit: document.getElementById("regLastVisit")?.value || new Date().toISOString().slice(0,10),
+          nextVisit: document.getElementById("regNextVisit")?.value || "",
+          medicalHistory: document.getElementById("regMedicalHistory")?.value || "None",
+          notes: document.getElementById("regNotes")?.value || "New patient registered"
+        });
+        addLogEntry(`Registered new patient: ${name} (ID:${newId})`);
+        modalDiv.remove();
+        renderTable();
+      });
+    });
+  }
+
+  // TREATMENTS (unchanged from previous working version)
+  function renderTreatments(container) {
+    container.innerHTML = `<div class="section-card">
+      <div class="section-header"><h3>🦷 Orthodontic / Braces Progress Monitoring</h3><span class="badge-pill">Track Treatment History</span></div>
+      <div style="overflow-x: auto;">
+        <table style="width:100%">
+          <thead><tr><th>Patient</th><th>Treatment Type</th><th>Last Visit</th><th>Next Visit</th><th>Track Record</th><th>Treatment Notes</th></tr></thead>
+          <tbody id="treatmentTableBody"></tbody>
+        </table>
+      </div>
+      <div class="section-card" style="margin-top:20px;">
+        <div class="section-header"><h3>📝 Adjustment & Progress Records</h3><button class="btn-primary" id="addProgressNoteBtn"><i class="fas fa-plus"></i> Add Adjustment Record</button></div>
+        <div id="progressNotesList" class="log-area">${adjustmentRecords.map(r => `<div>🦷 ${r.patientName} (${r.date}): ${r.adjustmentType} - ${r.notes} | Next: ${r.nextAdjustment || 'TBD'}</div>`).join('') || '<div>No adjustment records yet. Click "Add Adjustment Record" to track.</div>'}</div>
+      </div>
+    </div>`;
+    const tbody = document.getElementById("treatmentTableBody");
+    tbody.innerHTML = patients.map(p => `
+      <tr>
+        <td>${p.name}</td><td>${p.treatment}</td>
+        <td>${p.lastVisit || 'N/A'}</td>
+        <td>${p.nextVisit || 'N/A'}</td>
+        <td><button class="btn-sm trackRecordBtn" data-id="${p.id}"><i class="fas fa-history"></i> View Adjustment Records</button></td>
+        <td><button class="btn-sm viewTreatmentNotes" data-id="${p.id}"><i class="fas fa-notes-medical"></i> View Notes</button></td>
+      </tr>
+    `).join('');
+    document.querySelectorAll('.trackRecordBtn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const id = parseInt(btn.dataset.id);
+        const patient = patients.find(p => p.id === id);
+        const records = adjustmentRecords.filter(r => r.patientId === id);
+        if(records.length === 0) alert(`No adjustment records found for ${patient.name}.`);
+        else { let msg = `📋 ADJUSTMENT RECORDS for ${patient.name}:\n\n`; records.forEach(r => { msg += `📅 ${r.date} | ${r.adjustmentType}\n   Notes: ${r.notes}\n   Next: ${r.nextAdjustment || 'Not scheduled'}\n\n`; }); alert(msg); }
+      });
+    });
+    document.querySelectorAll('.viewTreatmentNotes').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const id = parseInt(btn.dataset.id);
+        const patient = patients.find(p=>p.id===id);
+        alert(`📋 Treatment History for ${patient.name}:\n${patient.notes}\nMedical History: ${patient.medicalHistory}\nCurrent Progress: ${patient.progress}%`);
+      });
+    });
+    document.getElementById("addProgressNoteBtn")?.addEventListener("click", () => {
+      let patientName = prompt("Select patient name (Emily Watson, James Miller, Sophia Garcia):");
+      let adjustmentType = prompt("Adjustment Type (e.g., Wire Change, Elastic Fitting):");
+      let notes = prompt("Detailed notes about this adjustment:");
+      let nextDate = prompt("Next adjustment date (YYYY-MM-DD):");
+      if(patientName && adjustmentType) {
+        const patient = patients.find(p => p.name.toLowerCase() === patientName.toLowerCase());
+        if(patient) {
+          adjustmentRecords.push({ id: adjustmentRecords.length + 1, patientId: patient.id, patientName: patient.name, date: new Date().toISOString().slice(0,10), adjustmentType, notes: notes || "No additional notes", nextAdjustment: nextDate || "" });
+          if(nextDate) patient.nextVisit = nextDate;
+          addLogEntry(`Added adjustment record for ${patient.name}: ${adjustmentType}`);
+        } else alert("Patient not found.");
+        renderCurrentView();
+      }
+    });
+  }
+
+  function renderBilling(container) {
+    container.innerHTML = `<div class="section-card"><div class="section-header"><h3>💰 Down Payment Approval System (Braces & Long-term Treatments)</h3><span class="badge-pill">Dentist Approval Required</span></div><div class="info-note"><i class="fas fa-info-circle"></i><div><strong>Dentist Approval Workflow:</strong><br>The dentist is responsible for approving down payments for braces and other long-term treatments.<br>Cash and GCash payments must be verified and confirmed.</div></div><div style="overflow-x: auto;"><table style="width:100%"><thead><tr><th>Transaction ID</th><th>Patient</th><th>Amount (₱)</th><th>Type</th><th>Status</th><th>Payment Method</th><th>Dentist Action</th></tr></thead><tbody id="billingTableBody"></tbody></table></div></div>`;
+    const tbody = document.getElementById("billingTableBody");
+    tbody.innerHTML = financialTransactions.map(t => `<tr><td>${t.id}</td><td>${t.patient}</td><td>₱${t.amount}</td><td>${t.type}</td><td><span class="badge-pill" style="background:${t.status === 'Approved' ? '#10b981' : (t.status === 'Rejected' ? '#ef4444' : '#f59e0b')}">${t.status}</span></td><td>${t.paymentMethod ? t.paymentMethod : '—'}</td><td>${t.status === "Pending Approval" ? `<select id="methodSelect-${t.id}" style="padding:6px 12px;"><option value="Cash">Cash</option><option value="GCash">GCash</option></select><button class="record-payment-btn approve-btn" data-id="${t.id}" style="background:#10b981;">Approve</button><button class="record-payment-btn reject-btn" data-id="${t.id}" style="background:#ef4444;">Reject</button>` : `<span>${t.status}</span>`}</td></tr>`).join('');
+    financialTransactions.forEach(t => { if (t.status === "Pending Approval") { document.querySelector(`.approve-btn[data-id='${t.id}']`)?.addEventListener('click', () => { const selectElem = document.getElementById(`methodSelect-${t.id}`); approveDownPayment(t.id, selectElem ? selectElem.value : "Cash"); }); document.querySelector(`.reject-btn[data-id='${t.id}']`)?.addEventListener('click', () => rejectDownPayment(t.id)); } });
+  }
+
+  function renderReports(container) {
+    const totalApproved = financialTransactions.filter(t=>t.status==="Approved").reduce((sum,t)=>sum+t.amount,0);
+    const pendingAmount = financialTransactions.filter(t=>t.status==="Pending Approval").reduce((sum,t)=>sum+t.amount,0);
+    container.innerHTML = `<div class="stats-row"><div class="stat-card"><h4>💰 Approved Down Payments</h4><div class="stat-number">₱${totalApproved.toLocaleString()}</div></div><div class="stat-card"><h4>⏳ Pending Approval</h4><div class="stat-number">₱${pendingAmount.toLocaleString()}</div></div><div class="stat-card"><h4>📅 Total Appointments</h4><div class="stat-number">${appointments.length}</div></div></div><div class="section-card"><div class="section-header"><h3>📈 Generate Financial Reports</h3></div><div class="report-buttons"><button class="btn-primary" id="genDaily">Daily</button><button class="btn-primary" id="genWeekly">Weekly</button><button class="btn-primary" id="genMonthly">Monthly</button><button class="btn-primary" id="genQuarterly">Quarterly</button></div><div id="reportPreview" class="log-area">Click a button to generate report.</div></div>`;
+    const showMsg = (period) => { document.getElementById("reportPreview").innerHTML = `<strong>${period}</strong><br>Approved: ₱${totalApproved}<br>Pending: ₱${pendingAmount}<br>Appointments: ${appointments.length}`; addLogEntry(`Generated ${period} report`); };
+    document.getElementById("genDaily")?.addEventListener("click",()=>showMsg("Daily Report"));
+    document.getElementById("genWeekly")?.addEventListener("click",()=>showMsg("Weekly Report"));
+    document.getElementById("genMonthly")?.addEventListener("click",()=>showMsg("Monthly Report"));
+    document.getElementById("genQuarterly")?.addEventListener("click",()=>showMsg("Quarterly Report"));
+  }
+
+  function renderSystem(container) {
+    container.innerHTML = `<div class="section-card"><div class="section-header"><h3>⚙️ System Control & Security</h3></div><div class="flex-between" style="margin-bottom:20px;"><span><i class="fas fa-database"></i> Automated Daily Backup</span><button class="btn-primary" id="backupDataBtn">Create Backup</button></div><div class="flex-between" style="margin-bottom:20px;"><span><i class="fas fa-lock"></i> Role-Based Access Control</span><button class="btn-primary" id="optimizeSchedulerBtn">Optimize Scheduler</button></div><div><i class="fas fa-shield-alt"></i> Data Privacy Compliance (RA 10173)</div><div class="log-area" style="margin-top:16px;">✅ System active. All financial transactions require dentist approval.</div></div>`;
+    document.getElementById("backupDataBtn")?.addEventListener("click",()=>{ addLogEntry("System backup performed"); alert("Backup completed."); });
+    document.getElementById("optimizeSchedulerBtn")?.addEventListener("click",()=>{ addLogEntry("Scheduling workflow optimized"); alert("Scheduler refreshed."); });
+  }
+
+  // ACCOUNTS with REMOVE ACCOUNT
+  function renderAccounts(container) {
+    container.innerHTML = `<div class="section-card"><div class="section-header"><h3>👥 Manage User Accounts (Role-Based Permissions)</h3><button class="btn-primary" id="createAccountBtn">+ New Account</button></div><div style="overflow-x: auto;"><table style="width:100%"><thead><tr><th>Username</th><th>Role</th><th>Status</th><th>Actions</th></tr></thead><tbody id="accountsTableBody"></tbody></table></div><div class="info-note"><i class="fas fa-info-circle"></i> Dentist has full access. Receptionist has limited access.</div></div>`;
+    function renderAccountsTable() {
+      const tbody = document.getElementById("accountsTableBody");
+      tbody.innerHTML = userAccounts.map(acc => `<tr><td>${acc.username}</td><td>${acc.role}</td><td><span class="badge-pill" style="background:${acc.status==='active'?'#10b981':'#ef4444'}">${acc.status}</span></td><td><button class="btn-sm toggleStatus" data-user="${acc.username}"><i class="fas fa-toggle-on"></i> Toggle</button> <button class="btn-sm resetPasswordBtn" data-user="${acc.username}"><i class="fas fa-key"></i> Reset</button> <button class="btn-sm removeAccountBtn" data-user="${acc.username}" style="color:#ef4444;"><i class="fas fa-trash-alt"></i> Remove</button></td></tr>`).join('');
+      document.querySelectorAll(".toggleStatus").forEach(btn=>{ btn.addEventListener("click",()=>{ const uname = btn.dataset.user; const acc = userAccounts.find(a=>a.username===uname); if(acc) { acc.status = acc.status==="active" ? "inactive" : "active"; addLogEntry(`Changed status of ${uname} to ${acc.status}`); renderAccountsTable(); } }); });
+      document.querySelectorAll(".resetPasswordBtn").forEach(btn=>{ btn.addEventListener("click",()=>{ addLogEntry(`Password reset for ${btn.dataset.user}`); alert(`Password reset link sent to ${btn.dataset.user}`); }); });
+      document.querySelectorAll(".removeAccountBtn").forEach(btn=>{ btn.addEventListener("click",()=>{ const uname = btn.dataset.user; if(confirm(`Are you sure you want to remove account "${uname}"?`)) { const index = userAccounts.findIndex(a => a.username === uname); if(index !== -1) { userAccounts.splice(index, 1); addLogEntry(`Removed account: ${uname}`); renderAccountsTable(); } } }); });
+    }
+    renderAccountsTable();
+    document.getElementById("createAccountBtn")?.addEventListener("click",()=>{ let newName = prompt("Enter new username:"); let role = prompt("Enter role (Receptionist/Admin):","Receptionist"); if(newName && role) { userAccounts.push({ username:newName, role, status:"active" }); addLogEntry(`Created new account: ${newName}`); renderAccountsTable(); } });
+  }
+
+  function createParticles() {
+    const particlesContainer = document.getElementById('particles');
+    for(let i = 0; i < 50; i++) {
+      const particle = document.createElement('div');
+      particle.className = 'dashboard-particle';
+      particle.style.left = Math.random() * 100 + '%';
+      particle.style.width = (Math.random() * 4 + 1) + 'px';
+      particle.style.height = particle.style.width;
+      particle.style.animationDuration = (Math.random() * 10 + 5) + 's';
+      particle.style.animationDelay = Math.random() * 10 + 's';
+      particlesContainer.appendChild(particle);
+    }
+  }
+
+  document.querySelectorAll(".nav-item").forEach(item => {
+    item.addEventListener("click", () => {
+      document.querySelectorAll(".nav-item").forEach(nav => nav.classList.remove("active"));
+      item.classList.add("active");
+      const tab = item.getAttribute("data-tab");
+      if (tab) activeTab = tab;
+      renderCurrentView();
+    });
+  });
+
+  createParticles();
+  renderCurrentView();
+</script>
+</body>
+</html>

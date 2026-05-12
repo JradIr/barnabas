@@ -128,14 +128,14 @@
   }
 }
 
-/* Dashboard Content */
+/* Dashboard Content - Main container with side margins */
 .admin-dashboard-content {
   position: relative;
   z-index: 1;
-  padding: 24px;
-  min-height: 100vh;
-  max-width: 1400px;
+  max-width: 1600px;
   margin: 0 auto;
+  padding: 24px 32px;
+  min-height: 100vh;
   width: 100%;
 }
 
@@ -144,14 +144,13 @@
   background: rgba(255, 255, 255, 0.95);
   backdrop-filter: blur(20px);
   border-radius: 24px;
-  padding: 24px 32px;
-  margin-bottom: 32px;
-  margin: 32px;
+  margin-bottom: 28px;
   display: flex;
   justify-content: space-between;
   align-items: center;
   flex-wrap: wrap;
   gap: 20px;
+  padding: 28px 32px;
   box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
   border: 1px solid rgba(44, 166, 164, 0.2);
   animation: slideDown 0.6s ease-out;
@@ -162,7 +161,7 @@
   align-items: center;
   gap: 8px;
   background: linear-gradient(135deg, #2ca6a4, #1a5f5d);
-  padding: 4px 12px;
+  padding: 6px 14px;
   border-radius: 50px;
   margin-bottom: 12px;
   width: fit-content;
@@ -188,7 +187,7 @@
   align-items: center;
   gap: 10px;
   background: #f8f9fa;
-  padding: 10px 20px;
+  padding: 12px 24px;
   border-radius: 16px;
   border: 1px solid #e0e8f0;
 }
@@ -197,9 +196,9 @@
 .stats-section {
   display: flex;
   gap: 24px;
-  margin-bottom: 32px;
-  margin: 32px;
+  margin-bottom: 28px;
   flex-wrap: wrap;
+  padding: 0;
 }
 
 .stat-item {
@@ -208,10 +207,10 @@
   background: rgba(255, 255, 255, 0.95);
   backdrop-filter: blur(10px);
   border-radius: 20px;
-  padding: 20px;
+  padding: 24px;
   display: flex;
   align-items: center;
-  gap: 16px;
+  gap: 18px;
   border: 1px solid rgba(44, 166, 164, 0.15);
   transition: all 0.3s ease;
 }
@@ -223,8 +222,8 @@
 }
 
 .stat-icon {
-  width: 60px;
-  height: 60px;
+  width: 65px;
+  height: 65px;
   border-radius: 18px;
   display: flex;
   align-items: center;
@@ -285,20 +284,22 @@
 /* Appointments Section */
 .appointments-section,
 .financial-section,
-.patients-section {
+.patients-section,
+.audit-section {
   background: rgba(255, 255, 255, 0.95);
   backdrop-filter: blur(10px);
   border-radius: 24px;
-  padding: 24px;
-  margin-bottom: 32px;
-  margin: 32px;
+  margin-bottom: 28px;
   border: 1px solid rgba(44, 166, 164, 0.15);
   transition: all 0.3s ease;
+  overflow: hidden;
+  padding: 24px 28px;
 }
 
 .appointments-section:hover,
 .financial-section:hover,
-.patients-section:hover {
+.patients-section:hover,
+.audit-section:hover {
   border-color: rgba(44, 166, 164, 0.3);
   box-shadow: 0 8px 30px rgba(44, 166, 164, 0.1);
 }
@@ -328,7 +329,7 @@
   display: flex;
   align-items: center;
   gap: 10px;
-  margin-bottom: 16px;
+  margin-bottom: 20px;
   padding-bottom: 12px;
   border-bottom: 2px solid rgba(44, 166, 164, 0.2);
 }
@@ -343,13 +344,13 @@
 /* Appointments Grid */
 .appointments-grid {
   display: grid;
-  grid-template-columns: 1fr 300px;
+  grid-template-columns: 1fr 320px;
   gap: 24px;
 }
 
 .calendar-wrapper,
 .stats-overview-wrapper {
-  background: white;
+  background: rgba(255, 255, 255, 0.8);
   border-radius: 20px;
   padding: 20px;
 }
@@ -402,7 +403,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 16px;
+  padding: 18px;
   background: linear-gradient(135deg, #f8f9fc 0%, #f1f3f8 100%);
   border-radius: 16px;
   transition: all 0.3s ease;
@@ -426,8 +427,8 @@
 }
 
 .overview-icon {
-  width: 50px;
-  height: 50px;
+  width: 55px;
+  height: 55px;
   border-radius: 14px;
   display: flex;
   align-items: center;
@@ -458,7 +459,7 @@
 
 .billing-wrapper,
 .payments-wrapper {
-  background: white;
+  background: rgba(255, 255, 255, 0.8);
   border-radius: 20px;
   padding: 20px;
 }
@@ -476,11 +477,12 @@
   color: #1a5f5d;
   border-bottom: 2px solid #2ca6a4;
   font-size: 0.85rem;
-  padding: 12px 16px;
+  padding: 14px 16px;
 }
 
 .dashboard-table .MuiTableCell-root {
   padding: 12px 16px;
+  border-bottom: 1px solid rgba(44, 166, 164, 0.1);
 }
 
 .table-row {
@@ -505,6 +507,12 @@
   font-weight: 600 !important;
 }
 
+.status-partial {
+  background: #fef3c7 !important;
+  color: #92400e !important;
+  font-weight: 600 !important;
+}
+
 .today-chip {
   background: linear-gradient(135deg, #2ca6a4, #1a5f5d) !important;
   color: white !important;
@@ -523,7 +531,7 @@
   font-weight: 600 !important;
 }
 
-/* Payments List */
+/* Payments List (backup) */
 .payments-list {
   max-height: 350px;
   overflow-y: auto;
@@ -547,6 +555,12 @@
   color: #2ca6a4;
 }
 
+/* Payment Table Specific */
+.payments-wrapper .dashboard-table .MuiTableCell-root:first-child,
+.billing-wrapper .dashboard-table .MuiTableCell-root:first-child {
+  font-weight: 500;
+}
+
 /* Loading State */
 .loading-container {
   display: flex;
@@ -557,6 +571,7 @@
   background: rgba(255, 255, 255, 0.9);
   border-radius: 24px;
   padding: 40px;
+  margin: 0;
 }
 
 /* Animations */
@@ -609,8 +624,84 @@
 .stat-item:nth-child(3) { animation-delay: 0.15s; }
 .stat-item:nth-child(4) { animation-delay: 0.2s; }
 
-/* Responsive */
+/* Audit Log Section Specific */
+.audit-section .dashboard-table .MuiTableCell-root:first-child {
+  font-family: monospace;
+  font-size: 0.8rem;
+}
+
+/* Responsive Styles with Proper Margins and Padding */
+@media (max-width: 1400px) {
+  .admin-dashboard-content {
+    max-width: 1400px;
+    padding: 20px 28px;
+  }
+  
+  .dashboard-header-glass,
+  .appointments-section,
+  .financial-section,
+  .patients-section,
+  .audit-section {
+    padding: 22px 26px;
+  }
+  
+  .stat-item {
+    padding: 20px;
+  }
+}
+
 @media (max-width: 1200px) {
+  .admin-dashboard-content {
+    padding: 16px 24px;
+  }
+  
+  .dashboard-header-glass,
+  .appointments-section,
+  .financial-section,
+  .patients-section,
+  .audit-section {
+    padding: 20px 24px;
+    margin-bottom: 24px;
+  }
+  
+  .appointments-grid {
+    grid-template-columns: 1fr 300px;
+    gap: 20px;
+  }
+  
+  .financial-grid {
+    gap: 20px;
+  }
+  
+  .stat-item {
+    min-width: 180px;
+    padding: 18px;
+  }
+}
+
+@media (max-width: 992px) {
+  .admin-dashboard-content {
+    padding: 14px 20px;
+  }
+  
+  .dashboard-header-glass,
+  .appointments-section,
+  .financial-section,
+  .patients-section,
+  .audit-section {
+    padding: 18px 22px;
+  }
+  
+  .stats-section {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+  }
+  
+  .stat-item {
+    min-width: auto;
+  }
+  
   .appointments-grid {
     grid-template-columns: 1fr;
   }
@@ -620,9 +711,19 @@
   }
 }
 
-@media (max-width: 900px) {
+@media (max-width: 768px) {
+  .admin-dashboard-content {
+    padding: 12px 16px;
+  }
+  
   .dashboard-header-glass {
     flex-direction: column;
+    text-align: center;
+    padding: 20px;
+    margin-bottom: 20px;
+  }
+  
+  .dashboard-header-left {
     text-align: center;
   }
   
@@ -630,17 +731,30 @@
     margin: 0 auto 12px auto;
   }
   
+  .dashboard-title {
+    font-size: 1.5rem !important;
+  }
+  
+  .dashboard-date-card {
+    justify-content: center;
+  }
+  
+  .appointments-section,
+  .financial-section,
+  .patients-section,
+  .audit-section {
+    padding: 16px 20px;
+    margin-bottom: 20px;
+  }
+  
   .stats-section {
-    flex-direction: column;
+    grid-template-columns: 1fr;
+    gap: 16px;
+    margin-bottom: 20px;
   }
   
   .stat-item {
     width: 100%;
-  }
-}
-
-@media (max-width: 768px) {
-  .admin-dashboard-content {
     padding: 16px;
   }
   
@@ -650,34 +764,194 @@
   }
   
   .overview-number {
+    font-size: 1.8rem !important;
+  }
+  
+  .stat-value {
     font-size: 1.5rem !important;
+  }
+  
+  .stat-icon {
+    width: 55px;
+    height: 55px;
+  }
+  
+  .stat-icon svg {
+    font-size: 28px !important;
+  }
+  
+  .calendar-wrapper,
+  .stats-overview-wrapper,
+  .billing-wrapper,
+  .payments-wrapper {
+    padding: 16px;
+  }
+  
+  .dashboard-table .MuiTableCell-root {
+    padding: 10px 12px;
+    font-size: 0.75rem;
+  }
+  
+  .dashboard-table .MuiTableHead-root .MuiTableCell-root {
+    padding: 10px 12px;
+    font-size: 0.7rem;
+  }
+  
+  .MuiChip-root {
+    font-size: 0.65rem !important;
   }
 }
 
 @media (max-width: 600px) {
   .admin-dashboard-content {
-    padding: 12px;
+    padding: 10px 12px;
   }
   
-  .dashboard-header-glass {
-    padding: 20px;
+  .dashboard-header-glass,
+  .appointments-section,
+  .financial-section,
+  .patients-section,
+  .audit-section {
+    padding: 14px 16px;
+    margin-bottom: 16px;
   }
   
   .dashboard-title {
-    font-size: 1.5rem !important;
+    font-size: 1.2rem !important;
+  }
+  
+  .dashboard-subtitle {
+    font-size: 0.75rem;
   }
   
   .stat-value {
-    font-size: 1.3rem !important;
+    font-size: 1.2rem !important;
+  }
+  
+  .overview-number {
+    font-size: 1.5rem !important;
   }
   
   .stat-icon {
-    width: 50px;
-    height: 50px;
+    width: 45px;
+    height: 45px;
   }
   
   .stat-icon svg {
     font-size: 24px !important;
+  }
+  
+  .dashboard-table .MuiTableCell-root {
+    padding: 8px 10px;
+    font-size: 0.7rem;
+  }
+  
+  .dashboard-table .MuiTableHead-root .MuiTableCell-root {
+    padding: 8px 10px;
+    font-size: 0.65rem;
+  }
+  
+  .section-title {
+    font-size: 1.1rem !important;
+  }
+  
+  .subsection-header h6 {
+    font-size: 0.9rem;
+  }
+  
+  .MuiChip-root {
+    padding: 0 8px;
+    height: 24px;
+    font-size: 0.6rem !important;
+  }
+  
+  .MuiChip-icon {
+    font-size: 14px !important;
+  }
+  
+  .overview-icon {
+    width: 45px;
+    height: 45px;
+  }
+  
+  .overview-icon svg {
+    font-size: 24px !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .admin-dashboard-content {
+    padding: 8px 10px;
+  }
+  
+  .dashboard-header-glass,
+  .appointments-section,
+  .financial-section,
+  .patients-section,
+  .audit-section {
+    padding: 12px 14px;
+    margin-bottom: 14px;
+    border-radius: 20px;
+  }
+  
+  .dashboard-title {
+    font-size: 1rem !important;
+  }
+  
+  .dashboard-welcome-badge span {
+    font-size: 0.65rem;
+  }
+  
+  .stat-label {
+    font-size: 0.6rem;
+  }
+  
+  .stat-value {
+    font-size: 1rem !important;
+  }
+  
+  .stat-trend caption {
+    font-size: 0.6rem;
+  }
+  
+  .dashboard-table .MuiTableCell-root {
+    padding: 6px 8px;
+    font-size: 0.65rem;
+  }
+  
+  .dashboard-table .MuiTableHead-root .MuiTableCell-root {
+    padding: 6px 8px;
+    font-size: 0.6rem;
+  }
+  
+  .MuiChip-root {
+    height: 20px;
+    font-size: 0.55rem !important;
+  }
+  
+  .MuiChip-icon {
+    font-size: 12px !important;
+    width: 14px !important;
+    height: 14px !important;
+  }
+  
+  .overview-item {
+    padding: 12px;
+  }
+  
+  .overview-number {
+    font-size: 1.2rem !important;
+  }
+  
+  .subsection-header {
+    margin-bottom: 12px;
+  }
+  
+  .calendar-wrapper,
+  .stats-overview-wrapper,
+  .billing-wrapper,
+  .payments-wrapper {
+    padding: 12px;
   }
 }
 
@@ -699,4 +973,64 @@
 
 ::-webkit-scrollbar-thumb:hover {
   background: #1a5f5d;
+}
+
+/* Table Container Overrides */
+.table-responsive {
+  overflow-x: auto;
+  margin: 0;
+  padding: 0;
+}
+
+/* Calendar Container Fix */
+.rbc-calendar {
+  background: white;
+  border-radius: 12px;
+  padding: 8px;
+}
+
+/* Chip Icon Adjustments */
+.MuiChip-icon {
+  margin-right: 4px !important;
+}
+
+/* Ensure all sections have consistent spacing */
+.appointments-section:last-child,
+.financial-section:last-child,
+.patients-section:last-child,
+.audit-section:last-child {
+  margin-bottom: 0;
+}
+
+/* Header Right Alignment */
+.dashboard-header-right {
+  display: flex;
+  align-items: center;
+}
+
+/* Fix for small screens */
+@media (max-width: 380px) {
+  .dashboard-table .MuiTableCell-root {
+    padding: 4px 6px;
+    font-size: 0.6rem;
+  }
+  
+  .dashboard-table .MuiTableHead-root .MuiTableCell-root {
+    padding: 4px 6px;
+    font-size: 0.55rem;
+  }
+  
+  .MuiChip-root {
+    height: 18px;
+    font-size: 0.5rem !important;
+    padding: 0 4px;
+  }
+  
+  .section-title {
+    font-size: 0.9rem !important;
+  }
+  
+  .subsection-header h6 {
+    font-size: 0.8rem;
+  }
 }

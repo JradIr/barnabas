@@ -1,69 +1,135 @@
-/* Container mimics Reddit's clean background */
+/* src/components/style/Profile.css */
+
 .profile-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 24px;
+}
+
+/* Hero Section */
+.hero-section {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 16px;
+  padding: 48px 32px;
+  margin-bottom: 24px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+.hero-content {
+  display: flex;
+  align-items: center;
+  gap: 32px;
+  flex-wrap: wrap;
+}
+
+.profile-avatar {
+  width: 120px !important;
+  height: 120px !important;
+  border: 4px solid white;
+  background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+  font-size: 48px !important;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+.hero-info {
+  flex: 1;
+}
+
+.hero-name {
+  color: white;
+  font-weight: 600 !important;
+  margin-bottom: 8px !important;
+}
+
+.hero-username {
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 1rem;
+  margin-bottom: 4px !important;
+}
+
+.hero-email {
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.edit-profile-btn {
+  background-color: white !important;
+  color: #667eea !important;
+  transition: transform 0.2s !important;
+}
+
+.edit-profile-btn:hover {
+  transform: translateY(-2px);
+  background-color: #f8f9fa !important;
+}
+
+/* Divider */
+.profile-divider {
+  margin: 32px 0 !important;
+  background: linear-gradient(to right, transparent, #667eea, #764ba2, transparent);
+  height: 2px !important;
+}
+
+/* Additional Information Section */
+.additional-info {
+  padding: 32px;
+  border-radius: 16px !important;
+}
+
+.section-title {
+  color: #333;
+  font-weight: 600 !important;
+  margin-bottom: 24px !important;
+  padding-bottom: 12px;
+  border-bottom: 3px solid #667eea;
+  display: inline-block;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .profile-container {
+    padding: 16px;
+  }
+
+  .hero-section {
+    padding: 32px 20px;
+  }
+
+  .hero-content {
+    flex-direction: column;
+    text-align: center;
+    gap: 20px;
+  }
+
+  .profile-avatar {
+    width: 100px !important;
+    height: 100px !important;
+    font-size: 40px !important;
+  }
+
+  .additional-info {
+    padding: 20px;
+  }
+}
+
+/* Card Animations */
+.additional-info .MuiCard-root {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.additional-info .MuiCard-root:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+}
+
+/* Loading State */
+.loading-container {
   display: flex;
   justify-content: center;
-  padding: 40px;
-  background-color: #f6f7f8; /* Reddit-like light gray */
-  min-height: 100vh;
+  align-items: center;
+  min-height: 60vh;
 }
 
-/* Card styling */
-.profile-card {
-  width: 100%;
-  max-width: 600px;
-  background: #fff;
-  border-radius: 8px;
-  padding: 30px;
-  border: 1px solid #e0e0e0;
-}
-
-/* Title */
-.profile-title {
-  font-weight: bold;
-  margin-bottom: 20px;
-  color: #1a1a1b; /* Reddit dark text */
-}
-
-/* Fields spacing */
-.profile-fields .MuiTextField-root {
-  background: #fafafa;
-  border-radius: 4px;
-}
-
-/* Actions */
-.profile-actions {
-  margin-top: 10px;
-}
-
-/* Buttons */
-.edit-btn,
-.profile-actions button {
-  text-transform: none; /* Reddit-style lowercase buttons */
-  font-weight: 500;
-}
-
-.edit-btn {
-  background-color: #ff4500; /* Reddit orange */
-}
-
-.edit-btn:hover {
-  background-color: #e03d00;
-}
-
-.profile-actions .MuiButton-containedPrimary {
-  background-color: #ff4500;
-}
-
-.profile-actions .MuiButton-containedPrimary:hover {
-  background-color: #e03d00;
-}
-
-.profile-actions .MuiButton-outlinedSecondary {
-  border-color: #787c7e;
-  color: #787c7e;
-}
-
-.profile-actions .MuiButton-outlinedSecondary:hover {
-  border-color: #1a1a1b;
-  color: #1a1a1b;
+/* Alert Styles */
+.MuiAlert-root {
+  border-radius: 12px !important;
 }

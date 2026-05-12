@@ -1,0 +1,648 @@
+/* src/components/style/StaffLogin.css */
+
+/* Reset and Base Styles */
+.staff-login-wrapper {
+  position: relative;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #0d2a2a 0%, #1a3d3b 50%, #2ca6a4 100%);
+  overflow-x: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Animated Background Circles */
+.staff-bg-animation {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.staff-bg-circle {
+  position: absolute;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.08);
+  animation: staffFloatAnimation 20s infinite ease-in-out;
+}
+
+.staff-bg-circle-1 {
+  width: 600px;
+  height: 600px;
+  top: -200px;
+  right: -200px;
+  animation-delay: 0s;
+  background: radial-gradient(circle, rgba(255,255,255,0.12), rgba(255,255,255,0.03));
+}
+
+.staff-bg-circle-2 {
+  width: 500px;
+  height: 500px;
+  bottom: -150px;
+  left: -150px;
+  animation-delay: -3s;
+  background: radial-gradient(circle, rgba(255,255,255,0.1), rgba(255,255,255,0.02));
+}
+
+.staff-bg-circle-3 {
+  width: 400px;
+  height: 400px;
+  top: 30%;
+  left: 15%;
+  animation-delay: -7s;
+  background: radial-gradient(circle, rgba(255,255,255,0.09), rgba(255,255,255,0.02));
+}
+
+.staff-bg-circle-4 {
+  width: 350px;
+  height: 350px;
+  bottom: 20%;
+  right: 10%;
+  animation-delay: -12s;
+  background: radial-gradient(circle, rgba(255,255,255,0.07), rgba(255,255,255,0.01));
+}
+
+.staff-bg-circle-5 {
+  width: 250px;
+  height: 250px;
+  top: 60%;
+  left: 70%;
+  animation-delay: -5s;
+  background: radial-gradient(circle, rgba(255,255,255,0.1), rgba(255,255,255,0.02));
+}
+
+.staff-bg-circle-6 {
+  width: 180px;
+  height: 180px;
+  top: 15%;
+  right: 25%;
+  animation-delay: -9s;
+  background: radial-gradient(circle, rgba(255,255,255,0.08), rgba(255,255,255,0.01));
+}
+
+@keyframes staffFloatAnimation {
+  0%, 100% {
+    transform: translate(0, 0) scale(1);
+  }
+  25% {
+    transform: translate(30px, -30px) scale(1.05);
+  }
+  50% {
+    transform: translate(-20px, 20px) scale(0.95);
+  }
+  75% {
+    transform: translate(20px, 30px) scale(1.02);
+  }
+}
+
+/* Floating Particles */
+.staff-particles {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.staff-particle {
+  position: absolute;
+  bottom: -10px;
+  width: 3px;
+  height: 3px;
+  background: rgba(255, 255, 255, 0.5);
+  border-radius: 50%;
+  animation: staffFloatParticle linear infinite;
+}
+
+@keyframes staffFloatParticle {
+  0% {
+    transform: translateY(0) translateX(0);
+    opacity: 0;
+  }
+  10% {
+    opacity: 1;
+  }
+  90% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(-100vh) translateX(20px);
+    opacity: 0;
+  }
+}
+
+/* Main Container */
+.staff-login-container {
+  position: relative;
+  z-index: 1;
+  flex: 1;
+  display: flex;
+  align-items: center;
+  min-height: calc(100vh - 80px);
+  padding: 2rem !important;
+  margin-top: 0;
+}
+
+/* Landscape Card */
+.landscape-card {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  max-width: 1100px;
+  margin: 0 auto;
+  background: transparent;
+  border-radius: 24px;
+  overflow: hidden;
+  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.25);
+  animation: staffSlideUpFade 0.6s ease-out;
+}
+
+@keyframes staffSlideUpFade {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Left Side - Dark Teal Branding */
+.staff-branding-side {
+  flex: 1;
+  background: linear-gradient(135deg, #0a2a28 0%, #1a5f5d 100%);
+  padding: 3rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.staff-branding-side::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle, rgba(255,255,255,0.08) 0%, rgba(255,255,255,0) 70%);
+  animation: staffRotateGlow 20s linear infinite;
+}
+
+@keyframes staffRotateGlow {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.staff-branding-content {
+  position: relative;
+  z-index: 1;
+  text-align: center;
+  animation: staffFadeInRight 0.8s ease-out;
+}
+
+@keyframes staffFadeInRight {
+  from {
+    opacity: 0;
+    transform: translateX(-30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.staff-shield-wrapper {
+  margin-bottom: 2rem;
+  display: flex;
+  justify-content: center;
+}
+
+.staff-shield-icon {
+  width: 80px;
+  height: 80px;
+  background: linear-gradient(135deg, #3dbebc 0%, #2ca6a4 100%);
+  border-radius: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+  animation: staffShieldPulse 2s ease-in-out infinite;
+}
+
+@keyframes staffShieldPulse {
+  0%, 100% {
+    transform: scale(1);
+    box-shadow: 0 10px 25px rgba(44, 166, 164, 0.3);
+  }
+  50% {
+    transform: scale(1.05);
+    box-shadow: 0 15px 35px rgba(44, 166, 164, 0.5);
+  }
+}
+
+.staff-brand-title {
+  font-size: 2rem !important;
+  font-weight: 700 !important;
+  color: white !important;
+  margin-bottom: 1rem !important;
+  letter-spacing: -0.5px;
+}
+
+.staff-brand-tagline {
+  font-size: 0.9rem !important;
+  color: rgba(255, 255, 255, 0.9) !important;
+  line-height: 1.6 !important;
+  margin-bottom: 2rem !important;
+}
+
+.staff-brand-features {
+  text-align: left;
+  display: inline-block;
+  margin-top: 1rem;
+}
+
+.staff-feature-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+  color: white;
+  font-size: 0.9rem;
+  opacity: 0.9;
+  transition: transform 0.3s ease;
+}
+
+.staff-feature-item:hover {
+  transform: translateX(5px);
+  opacity: 1;
+}
+
+.staff-feature-dot {
+  width: 6px;
+  height: 6px;
+  background: #2ca6a4;
+  border-radius: 50%;
+  animation: staffDotPulse 1.5s ease-in-out infinite;
+}
+
+@keyframes staffDotPulse {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.5);
+    opacity: 0.5;
+  }
+}
+
+/* Right Side - Form Side */
+.staff-form-side {
+  flex: 1;
+  padding: 3rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: white;
+  animation: staffFadeInLeft 0.8s ease-out;
+}
+
+@keyframes staffFadeInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.staff-form-container {
+  width: 100%;
+  max-width: 400px;
+}
+
+.staff-form-title {
+  font-size: 1.75rem !important;
+  font-weight: 700 !important;
+  color: #1a2a3a !important;
+  margin-bottom: 0.5rem !important;
+  text-align: center;
+}
+
+.staff-form-subtitle {
+  font-size: 0.875rem !important;
+  color: #6c757d !important;
+  margin-bottom: 2rem !important;
+  text-align: center;
+}
+
+.staff-login-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.staff-form-field {
+  animation: staffFieldFadeIn 0.6s ease-out;
+  animation-fill-mode: both;
+}
+
+.staff-form-field:nth-child(1) { animation-delay: 0.1s; }
+.staff-form-field:nth-child(2) { animation-delay: 0.2s; }
+
+@keyframes staffFieldFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Staff Login Button */
+.staff-login-button {
+  background: linear-gradient(135deg, #2ca6a4 0%, #1a5f5d 100%) !important;
+  color: white !important;
+  font-weight: 600 !important;
+  font-size: 1rem !important;
+  padding: 0.875rem !important;
+  border-radius: 12px !important;
+  text-transform: none !important;
+  transition: all 0.3s ease !important;
+  position: relative;
+  overflow: hidden;
+  margin-top: 0.5rem;
+}
+
+.staff-login-button::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.3);
+  transform: translate(-50%, -50%);
+  transition: width 0.6s, height 0.6s;
+}
+
+.staff-login-button:hover::before {
+  width: 300px;
+  height: 300px;
+}
+
+.staff-login-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 25px rgba(44, 166, 164, 0.4);
+}
+
+.staff-login-button:active {
+  transform: translateY(0);
+}
+
+.staff-login-button.loading {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+/* Back Link */
+.staff-back-link {
+  text-align: center;
+  margin-top: 1rem;
+  padding-top: 0.5rem;
+}
+
+.staff-back-link-text {
+  color: #2ca6a4;
+  text-decoration: none;
+  font-size: 0.875rem;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.staff-back-link-text:hover {
+  color: #1e7a78;
+  transform: translateX(-3px);
+}
+
+/* Admin Link */
+.staff-admin-link {
+  text-align: center;
+  margin-top: 0.5rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid #e9ecef;
+}
+
+.staff-admin-link-text {
+  color: #6c757d;
+  text-decoration: none;
+  font-size: 0.8rem;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.staff-admin-link-text:hover {
+  color: #2ca6a4;
+  transform: translateX(3px);
+}
+
+/* Error Message */
+.staff-error-message-wrapper {
+  margin-bottom: 1.5rem;
+  animation: staffShakeError 0.5s ease-in-out;
+}
+
+@keyframes staffShakeError {
+  0%, 100% { transform: translateX(0); }
+  10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+  20%, 40%, 60%, 80% { transform: translateX(5px); }
+}
+
+.staff-error-progress {
+  height: 3px;
+  background: linear-gradient(90deg, #dc3545, #ff6b6b);
+  width: 100%;
+  animation: staffErrorProgress 3s linear forwards;
+  border-radius: 2px;
+  margin-top: 8px;
+}
+
+@keyframes staffErrorProgress {
+  from {
+    width: 100%;
+  }
+  to {
+    width: 0%;
+  }
+}
+
+/* Footer */
+.staff-login-footer {
+  position: relative;
+  z-index: 1;
+  text-align: center;
+  padding: 1.5rem;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 0.875rem;
+  backdrop-filter: blur(10px);
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  margin-top: auto;
+}
+
+/* Responsive Design */
+@media (max-width: 968px) {
+  .landscape-card {
+    flex-direction: column;
+    max-width: 500px;
+  }
+  
+  .staff-branding-side {
+    padding: 2rem;
+  }
+  
+  .staff-form-side {
+    padding: 2rem;
+  }
+  
+  .staff-brand-title {
+    font-size: 1.5rem !important;
+  }
+  
+  .staff-shield-icon {
+    width: 60px;
+    height: 60px;
+  }
+  
+  .staff-shield-icon svg {
+    width: 40px;
+    height: 40px;
+  }
+  
+  .staff-brand-features {
+    display: none;
+  }
+}
+
+@media (max-width: 768px) {
+  .staff-login-container {
+    padding: 1rem !important;
+  }
+  
+  .landscape-card {
+    border-radius: 20px;
+  }
+  
+  .staff-branding-side {
+    padding: 1.5rem;
+  }
+  
+  .staff-form-side {
+    padding: 1.5rem;
+  }
+  
+  .staff-form-title {
+    font-size: 1.5rem !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .landscape-card {
+    border-radius: 16px;
+  }
+  
+  .staff-brand-title {
+    font-size: 1.25rem !important;
+  }
+  
+  .staff-brand-tagline {
+    font-size: 0.8rem !important;
+  }
+  
+  .staff-form-title {
+    font-size: 1.25rem !important;
+  }
+  
+  .staff-form-subtitle {
+    font-size: 0.75rem !important;
+  }
+  
+  .staff-login-button {
+    font-size: 0.875rem !important;
+    padding: 0.75rem !important;
+  }
+  
+  .staff-shield-icon {
+    width: 50px;
+    height: 50px;
+  }
+  
+  .staff-shield-icon svg {
+    width: 32px;
+    height: 32px;
+  }
+}
+
+/* Input Focus Effects */
+.MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline {
+  border-color: #2ca6a4 !important;
+  border-width: 2px !important;
+}
+
+.MuiInputLabel-root.Mui-focused {
+  color: #2ca6a4 !important;
+}
+
+/* Hover effect on inputs */
+.MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline {
+  border-color: #2ca6a4;
+}
+
+/* Staff page active class */
+.staff-login-page-active {
+  overflow-x: hidden;
+}
+
+/* Loading spinner for button */
+@keyframes staffSpin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.staff-login-button.loading::after {
+  content: '';
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  top: 50%;
+  left: 50%;
+  margin-left: -10px;
+  margin-top: -10px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-top-color: white;
+  border-radius: 50%;
+  animation: staffSpin 0.8s linear infinite;
+}
